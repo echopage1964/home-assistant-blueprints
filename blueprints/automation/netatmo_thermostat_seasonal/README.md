@@ -1,5 +1,4 @@
-# Titolo grande
-Netatmo Thermostat Stagionale
+# Netatmo Thermostat Stagionale
 Blueprint per Home Assistant che gestisce il termostato Netatmo in modo intelligente, tenendo conto della temperatura interna, esterna, della stagione e di condizioni ambientali come presenza e finestra aperta.
 
 🎯 Funzionalità
