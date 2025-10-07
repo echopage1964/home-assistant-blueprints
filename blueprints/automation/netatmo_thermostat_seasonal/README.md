@@ -9,10 +9,10 @@ Modalità Netatmo configurabile (manual, away, frost guard)
 Intervallo di controllo ogni 5 minuti
 
 ## Requisiti
-Integrazione Netatmo attiva in Home Assistant
-Sensore temperatura interna (es. sensor.netatmo_salon_temperature)
-Sensore temperatura esterna (es. sensor.netatmo_giardino_temperature)
-(Opzionali) Sensore di presenza e sensore finestra aperta
+Integrazione Netatmo attiva in Home Assistant.
+Sensore temperatura interna (es. sensor.netatmo_salon_temperature).
+Sensore temperatura esterna (es. sensor.netatmo_giardino_temperature).
+(Opzionali) Sensore di presenza e sensore finestra aperta.
 
 ## Installazione
 Copia il file netatmo_thermostat_seasonal.yaml in:
