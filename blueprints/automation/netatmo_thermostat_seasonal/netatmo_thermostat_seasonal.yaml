@@ -1,0 +1,122 @@
+blueprint:
+  name: Termostato Netatmo con Logica Stagionale
+  description: Controllo intelligente del termostato Netatmo basato su temperatura interna, esterna, stagione e condizioni ambientali
+  domain: automation
+  input:
+    climate_entity:
+      name: Termostato Netatmo
+      selector:
+        entity:
+          domain: climate
+    internal_temp_sensor:
+      name: Sensore temperatura interna
+      selector:
+        entity:
+          domain: sensor
+    external_temp_sensor:
+      name: Sensore temperatura esterna
+      selector:
+        entity:
+          domain: sensor
+    winter_min_temp:
+      name: Soglia minima interna in inverno
+      selector:
+        number:
+          min: 5
+          max: 25
+          step: 0.5
+    winter_max_temp:
+      name: Soglia massima interna in inverno
+      selector:
+        number:
+          min: 10
+          max: 30
+          step: 0.5
+    summer_min_temp:
+      name: Soglia minima interna in estate
+      selector:
+        number:
+          min: 5
+          max: 25
+          step: 0.5
+    summer_max_temp:
+      name: Soglia massima interna in estate
+      selector:
+        number:
+          min: 10
+          max: 30
+          step: 0.5
+    seasonal_threshold:
+      name: Soglia temperatura esterna per distinguere estate/inverno
+      selector:
+        number:
+          min: 5
+          max: 25
+          step: 0.5
+    target_temp:
+      name: Temperatura target interna
+      selector:
+        number:
+          min: 10
+          max: 30
+          step: 0.5
+    preset_mode:
+      name: Modalità Netatmo da usare
+      selector:
+        select:
+          options:
+            - manual
+            - away
+            - frost guard
+    presence_entity:
+      name: Sensore di presenza (opzionale)
+      default: ""
+      selector:
+        entity:
+          domain: binary_sensor
+    window_entity:
+      name: Sensore finestra aperta (opzionale)
+      default: ""
+      selector:
+        entity:
+          domain: binary_sensor
+
+trigger:
+  - platform: time_pattern
+    minutes: "/5"
+
+action:
+  - variables:
+      internal_temp: "{{ states(internal_temp_sensor) | float }}"
+      external_temp: "{{ states(external_temp_sensor) | float }}"
+      is_home: "{{ presence_entity == '' or is_state(presence_entity, 'on') }}"
+      is_window_closed: "{{ window_entity == '' or is_state(window_entity, 'off') }}"
+      is_winter: "{{ external_temp < seasonal_threshold }}"
+      min_temp: "{{ is_winter | iif(winter_min_temp, summer_min_temp) }}"
+      max_temp: "{{ is_winter | iif(winter_max_temp, summer_max_temp) }}"
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ internal_temp < min_temp and is_home and is_window_closed }}
+        sequence:
+          - service: climate.set_preset_mode
+            target:
+              entity_id: !input climate_entity
+            data:
+              preset_mode: !input preset_mode
+          - service: climate.set_temperature
+            target:
+              entity_id: !input climate_entity
+            data:
+              temperature: !input target_temp
+      - conditions:
+          - condition: template
+            value_template: >
+              {{ internal_temp > max_temp or not is_home or not is_window_closed }}
+        sequence:
+          - service: climate.set_preset_mode
+            target:
+              entity_id: !input climate_entity
+            data:
+              preset_mode: away
