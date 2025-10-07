@@ -3,33 +3,22 @@ Blueprint per Home Assistant che gestisce il termostato Netatmo in modo intellig
 
 ## Funzionalità
 Controllo dinamico del riscaldamento basato su soglie configurabili
-
 Logica stagionale: soglie diverse per estate e inverno
-
 Supporto per sensori di presenza e finestra aperta
-
 Modalità Netatmo configurabile (manual, away, frost guard)
-
 Intervallo di controllo ogni 5 minuti
 
 ## Requisiti
 Integrazione Netatmo attiva in Home Assistant
-
 Sensore temperatura interna (es. sensor.netatmo_salon_temperature)
-
 Sensore temperatura esterna (es. sensor.netatmo_giardino_temperature)
-
 (Opzionali) Sensore di presenza e sensore finestra aperta
 
 ## Installazione
 Copia il file netatmo_thermostat_seasonal.yaml in:
-
-Codice
 config/blueprints/automation/netatmo_thermostat_seasonal/
 Riavvia Home Assistant o aggiorna la pagina dei blueprint
-
 Vai su Impostazioni > Automazioni > Progetti (Blueprints)
-
 Clicca su Crea Automazione e configura i parametri
 
 ## Parametri configurabili
@@ -52,10 +41,10 @@ Se temperatura interna < soglia minima → accende
 Se temperatura interna > soglia massima → spegne
 Se assenza o finestra aperta → imposta away
 
-# Suggerimenti
+## Suggerimenti
 Imposta la programmazione Netatmo su modalità Notte 24h per evitare conflitti
 Usa Home Assistant come gestore attivo del comfort
 Puoi duplicare l’automazione per gestire più zone o stanze
 
-# Licenza
+## Licenza
 Questo blueprint è distribuito con licenza MIT. Puoi modificarlo e riutilizzarlo liberamente.
