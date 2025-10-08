@@ -87,13 +87,13 @@ trigger:
 
 action:
   - variables:
-      internal_temp: "{{ states(internal_temp_sensor) | float }}"
-      external_temp: "{{ states(external_temp_sensor) | float }}"
-      is_home: "{{ presence_entity == '' or is_state(presence_entity, 'on') }}"
-      is_window_closed: "{{ window_entity == '' or is_state(window_entity, 'off') }}"
-      is_winter: "{{ external_temp < seasonal_threshold }}"
-      min_temp: "{{ is_winter | iif(winter_min_temp, summer_min_temp) }}"
-      max_temp: "{{ is_winter | iif(winter_max_temp, summer_max_temp) }}"
+      internal_temp: "{{ states(input.internal_temp_sensor) | float }}"
+      external_temp: "{{ states(input.external_temp_sensor) | float }}"
+      is_home: "{{ input.presence_entity == '' or is_state(input.presence_entity, 'on') }}"
+      is_window_closed: "{{ input.window_entity == '' or is_state(input.window_entity, 'off') }}"
+      is_winter: "{{ external_temp < input.seasonal_threshold }}"
+      min_temp: "{{ input.winter_min_temp if is_winter else input.summer_min_temp }}"
+      max_temp: "{{ input.winter_max_temp if is_winter else input.summer_max_temp }}"
   - choose:
       - conditions:
           - condition: template
@@ -102,14 +102,14 @@ action:
         sequence:
           - service: climate.set_preset_mode
             target:
-              entity_id: !input climate_entity
+              entity_id: "{{ input.climate_entity }}"
             data:
-              preset_mode: !input preset_mode
+              preset_mode: "{{ input.preset_mode }}"
           - service: climate.set_temperature
             target:
-              entity_id: !input climate_entity
+              entity_id: "{{ input.climate_entity }}"
             data:
-              temperature: !input target_temp
+              temperature: "{{ input.target_temp }}"
       - conditions:
           - condition: template
             value_template: >
@@ -117,6 +117,7 @@ action:
         sequence:
           - service: climate.set_preset_mode
             target:
-              entity_id: !input climate_entity
+              entity_id: "{{ input.climate_entity }}"
             data:
               preset_mode: away
+
