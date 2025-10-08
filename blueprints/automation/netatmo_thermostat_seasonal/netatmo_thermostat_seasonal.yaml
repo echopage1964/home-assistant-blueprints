@@ -5,21 +5,25 @@ blueprint:
   input:
     climate_entity:
       name: Termostato Netatmo
+      description: "Il termostato Netatmo da controllare con questo blueprint."
       selector:
         entity:
           domain: climate
     internal_temp_sensor:
       name: Sensore temperatura interna
+      description: "Sensore della temperatura interna utilizzato per confrontare con le soglie stagionali."
       selector:
         entity:
           domain: sensor
     external_temp_sensor:
       name: Sensore temperatura esterna
+      description: "Sensore della temperatura esterna usato per determinare se è inverno o estate."
       selector:
         entity:
           domain: sensor
     winter_min_temp:
       name: Soglia minima interna in inverno
+      description: "Temperatura minima interna accettabile durante l'inverno. Se la temperatura scende sotto questo valore il termostato entra in modalità riscaldamento."
       selector:
         number:
           min: 5
@@ -27,6 +31,7 @@ blueprint:
           step: 0.5
     winter_max_temp:
       name: Soglia massima interna in inverno
+      description: "Temperatura massima interna in inverno. Se la temperatura supera questo valore, il riscaldamento può essere spento o il termostato messo in away."
       selector:
         number:
           min: 10
@@ -34,6 +39,7 @@ blueprint:
           step: 0.5
     summer_min_temp:
       name: Soglia minima interna in estate
+      description: "Temperatura minima interna accettabile durante l'estate. Se la temperatura scende sotto questo valore il termostato può essere acceso."
       selector:
         number:
           min: 5
@@ -41,6 +47,7 @@ blueprint:
           step: 0.5
     summer_max_temp:
       name: Soglia massima interna in estate
+      description: "Temperatura massima interna in estate. Se la temperatura supera questo valore il termostato può essere spento o messo in away."
       selector:
         number:
           min: 10
@@ -48,6 +55,7 @@ blueprint:
           step: 0.5
     seasonal_threshold:
       name: Soglia temperatura esterna per distinguere estate/inverno
+      description: "Se la temperatura esterna è inferiore a questa soglia, il blueprint considera l'ambiente in inverno; altrimenti estate."
       selector:
         number:
           min: 5
@@ -55,6 +63,7 @@ blueprint:
           step: 0.5
     target_temp:
       name: Temperatura target interna
+      description: "Temperatura interna desiderata quando il termostato entra in modalità manuale o preset scelto."
       selector:
         number:
           min: 10
@@ -62,6 +71,7 @@ blueprint:
           step: 0.5
     preset_mode:
       name: Modalità Netatmo da usare
+      description: "Preset da impostare sul termostato quando la logica decide di riscaldare o raffreddare la stanza."
       selector:
         select:
           options:
@@ -70,12 +80,14 @@ blueprint:
             - frost guard
     presence_entity:
       name: Sensore di presenza (opzionale)
+      description: "Se configurato, il termostato agisce solo quando la presenza è rilevata. Se vuoto, ignora la presenza."
       default: ""
       selector:
         entity:
           domain: binary_sensor
     window_entity:
       name: Sensore finestra aperta (opzionale)
+      description: "Se configurato, quando la finestra è aperta il termostato va in 'away' e ripristina lo stato precedente alla chiusura."
       default: ""
       selector:
         entity:
@@ -130,3 +142,4 @@ action:
               entity_id: "{{ input.climate_entity }}"
             data:
               preset_mode: away
+
