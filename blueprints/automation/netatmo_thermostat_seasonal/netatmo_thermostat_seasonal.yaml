@@ -1,6 +1,6 @@
 blueprint:
-  name: Termostato Netatmo con Logica Stagionale
-  description: Controllo intelligente del termostato Netatmo basato su temperatura interna, esterna, stagione e condizioni ambientali
+  name: Termostato Netatmo con Logica Stagionale Reattiva
+  description: Controllo intelligente del termostato Netatmo basato su temperatura interna, esterna, stagione e condizioni ambientali, reagisce subito ai cambiamenti.
   domain: automation
   input:
     climate_entity:
@@ -82,8 +82,18 @@ blueprint:
           domain: binary_sensor
 
 trigger:
-  - platform: time_pattern
-    minutes: "/5"
+  - platform: state
+    entity_id: "{{ input.internal_temp_sensor }}"
+  - platform: state
+    entity_id: "{{ input.external_temp_sensor }}"
+  - platform: state
+    entity_id: "{{ input.presence_entity }}"
+    for:
+      seconds: 0
+  - platform: state
+    entity_id: "{{ input.window_entity }}"
+    for:
+      seconds: 0
 
 action:
   - variables:
@@ -120,4 +130,3 @@ action:
               entity_id: "{{ input.climate_entity }}"
             data:
               preset_mode: away
-
